@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus — Rede Social Moderna</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Container Principal (Layout 3 Colunas) -->
+    <div class="max-w-7xl mx-auto flex min-h-screen">
+
+        <!-- 1. SIDEBAR ESQUERDA (Navegação) -->
+        <aside class="hidden md:flex flex-col justify-between w-20 xl:w-64 fixed h-screen border-r border-slate-800/80 px-3 xl:px-6 py-6 bg-slate-950/90 backdrop-blur-md z-30">
+            <div class="space-y-6">
+                <!-- Logo -->
+                <a href="#" onclick="switchView('feed')" class="flex items-center gap-3 px-2 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-atom text-white text-xl"></i>
+                    </div>
+                    <span class="hidden xl:block text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Nexus</span>
+                </a>
+
+                <!-- Menu -->
+                <nav class="space-y-1.5" id="desktop-nav">
+                    <button onclick="switchView('feed')" data-view="feed" class="nav-btn active w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium">
+                        <i class="fa-solid fa-house text-xl w-6 text-center"></i>
+                        <span class="hidden xl:block">Página Inicial</span>
+                    </button>
+                    <button onclick="switchView('explore')" data-view="explore" class="nav-btn w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium">
+                        <i class="fa-solid fa-hashtag text-xl w-6 text-center"></i>
+                        <span class="hidden xl:block">Explorar</span>
+                    </button>
+                    <button onclick="switchView('notifications')" data-view="notifications" class="nav-btn w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium relative">
+                        <div class="relative">
+                            <i class="fa-regular fa-bell text-xl w-6 text-center"></i>
+                            <span id="notif-badge" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-slate-950"></span>
+                        </div>
+                        <span class="hidden xl:block">Notificações</span>
+                    </button>
+                    <button onclick="switchView('messages')" data-view="messages" class="nav-btn w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium">
+                        <i class="fa-regular fa-envelope text-xl w-6 text-center"></i>
+                        <span class="hidden xl:block">Mensagens</span>
+                    </button>
+                    <button onclick="switchView('bookmarks')" data-view="bookmarks" class="nav-btn w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium">
+                        <i class="fa-regular fa-bookmark text-xl w-6 text-center"></i>
+                        <span class="hidden xl:block">Salvos</span>
+                    </button>
+                    <button onclick="switchView('profile')" data-view="profile" class="nav-btn w-full flex items-center gap-4 px-3.5 py-3 rounded-xl text-slate-300 hover:bg-slate-900 hover:text-white transition font-medium">
+                        <i class="fa-regular fa-user text-xl w-6 text-center"></i>
+                        <span class="hidden xl:block">Perfil</span>
+                    </button>
+                </nav>
+
+                <!-- Botão Publicar -->
+                <button onclick="focusComposer()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-600/25 transition flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                    <span class="hidden xl:block">Publicar</span>
+                </button>
+            </div>
+
+            <!-- Card Mini Perfil -->
+            <div onclick="switchView('profile')" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-900 cursor-pointer transition border border-transparent hover:border-slate-800">
+                <img id="sidebar-avatar" src="" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-500/40">
+                <div class="hidden xl:block overflow-hidden">
+                    <p id="sidebar-name" class="text-sm font-semibold truncate"></p>
+                    <p id="sidebar-handle" class="text-xs text-slate-400 truncate"></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 2. COLUNA CENTRAL (Feed Dinâmico) -->
+        <main class="flex-1 md:ml-20 xl:ml-64 lg:mr-80 border-r border-slate-800/80 min-h-screen pb-20 md:pb-8">
+            <!-- Header Fixo -->
+            <header class="sticky top-0 z-20 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="md:hidden w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                        <i class="fa-solid fa-atom text-white text-sm"></i>
+                    </div>
+                    <h1 id="view-title" class="text-lg font-bold tracking-tight">Página Inicial</h1>
+                </div>
+                <button onclick="resetDemoData()" title="Restaurar dados iniciais" class="text-xs text-slate-400 hover:text-indigo-400 px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-indigo-500/40 transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Resetar Demo
+                </button>
+            </header>
+
+            <!-- Conteúdo Injetado via JS -->
+            <div id="main-content"></div>
+        </main>
+
+        <!-- 3. SIDEBAR DIREITA (Busca & Trends) -->
+        <aside class="hidden lg:block w-80 fixed right-0 xl:right-[max(0px,calc(50vw-40rem))] h-screen px-5 py-4 space-y-5 overflow-y-auto">
+            <!-- Busca em tempo real -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="Buscar posts, #tags ou pessoas..."
+                    class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-full py-2.5 pl-11 pr-4 text-sm text-slate-100 placeholder-slate-500 outline-none transition">
+            </div>
+
+            <!-- Assuntos do Momento -->
+            <div class="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 space-y-4">
+                <h2 class="font-bold text-base flex items-center justify-between">
+                    <span>Assuntos do Momento</span>
+                    <i class="fa-solid fa-fire text-orange-500 text-sm"></i>
+                </h2>
+                <div id="trending-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Sugestões para Seguir -->
+            <div class="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 space-y-4">
+                <h2 class="font-bold text-base">Quem seguir</h2>
+                <div id="suggestions-list" class="space-y-3.5"></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- NAVEGAÇÃO INFERIOR MOBILE -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 flex justify-around py-2.5 z-40">
+        <button onclick="switchView('feed')" class="text-slate-300 hover:text-indigo-400 p-2"><i class="fa-solid fa-house text-xl"></i></button>
+        <button onclick="switchView('explore')" class="text-slate-300 hover:text-indigo-400 p-2"><i class="fa-solid fa-hashtag text-xl"></i></button>
+        <button onclick="switchView('notifications')" class="text-slate-300 hover:text-indigo-400 p-2"><i class="fa-regular fa-bell text-xl"></i></button>
+        <button onclick="switchView('messages')" class="text-slate-300 hover:text-indigo-400 p-2"><i class="fa-regular fa-envelope text-xl"></i></button>
+        <button onclick="switchView('profile')" class="text-slate-300 hover:text-indigo-400 p-2"><i class="fa-regular fa-user text-xl"></i></button>
+    </nav>
+
+    <!-- MODAL DE STORIES -->
+    <div id="story-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-sm bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+            <div class="absolute top-3 inset-x-3 z-20 flex gap-1">
+                <div class="h-1 flex-1 bg-white/30 rounded-full overflow-hidden">
+                    <div id="story-progress" class="h-full bg-white w-0"></div>
+                </div>
+            </div>
+            <div class="absolute top-6 inset-x-4 z-20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <img id="story-user-avatar" src="" class="w-9 h-9 rounded-full object-cover border border-white">
+                    <span id="story-user-name" class="text-sm font-semibold text-white drop-shadow"></span>
+                </div>
+                <button onclick="closeStory()" class="text-white/80 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <img id="story-image" src="" class="w-full h-[520px] object-cover">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5">
+                <p id="story-caption" class="text-white text-sm font-medium"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PERFIL -->
+    <div id="edit-profile-modal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold">Editar Perfil</h3>
+                <button onclick="toggleEditProfileModal(false)" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Nome de exibição</label>
+                    <input id="edit-name" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Bio</label>
+                    <textarea id="edit-bio" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Localização</label>
+                    <input id="edit-location" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-indigo-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleEditProfileModal(false)" class="px-4 py-2 rounded-xl text-sm text-slate-300 hover:bg-slate-800">Cancelar</button>
+                <button onclick="saveProfile()" class="px-4 py-2 rounded-xl text-sm bg-indigo-600 hover:bg-indigo-500 text-white font-semibold">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICAÇÃO -->
+    <div id="toast" class="fixed bottom-16 md:bottom-6 right-6 bg-indigo-600 text-white px-4 py-2.5 rounded-xl shadow-xl text-sm font-medium transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>v
