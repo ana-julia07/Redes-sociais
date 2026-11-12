@@ -1,0 +1,51 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Item ativo da navegação */
+.nav-btn.active {
+    background-color: rgba(79, 70, 229, 0.14);
+    color: #818cf8;
+    font-weight: 700;
+}
+
+/* Animação de curtida */
+@keyframes popHeart {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.38); }
+    100% { transform: scale(1); }
+}
+.animate-heart {
+    animation: popHeart 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animação de entrada dos posts */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.post-card {
+    animation: fadeSlideIn 0.28s ease-out;
+}
